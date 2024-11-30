@@ -72,157 +72,159 @@ const REDIRECT_URI = "https://developers.google.com/oauthplayground";
 const REFRESH_TOKEN =
   "1//04eIzv6PqTShGCgYIARAAGAQSNwF-L9Ir0eaxPm7AJaksRGRlnPNdZF7QdJZveHyicF0kEaqhVmQONsbvMOjWychuhXIf2qaPZTw";
 
-const sendOtp = async (req, res) => {
-  const { email, userId, name } = req.body;
-
-  try {
-    const newOtp = generateOtp(4);
-    await User.findOneAndUpdate(
-      { _id: userId },
-      { $set: { otp: newOtp, email } }
-    );
-    const { token: accessToken } = await oAuth2Client.getAccessToken();
-
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        type: 'OAuth2',
-        user: 'eyalokmani@gmail.com',
-        clientId: CLIENT_ID,
-        clientSecret: CLIENT_SECRET,
-        refreshToken: REFRESH_TOKEN,
-        accessToken: accessToken,
-      },
-    });
-
-    const mailOptions = {
-      from: 'eyalokmani@gmail.com',
-      to: email,
-      subject: 'Your OTP for Tradex Pro',
-      html: `
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Verification</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            font-size: 24px;
-            color: #333;
-        }
-        p {
-            font-size: 16px;
-            color: #555;
-        }
-        .otp-code {
-            font-size: 24px;
-            font-weight: bold;
-            color: #007BFF;
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #777;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Hi ${name ? name : 'User'},</h1>
-        <p>Your OTP code is:</p>
-        <p class="otp-code">${newOtp}</p>
-        <p>Please enter this code to verify your identity.</p>
-        <div class="footer">
-            <p>Thank you for using our service!</p>
-        </div>
-    </div>
-</body>
-</html>
-      `,
-    };
-
-    // Send email
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log('Error sending email:', error);
-        return send400(res, { status: false, message: error.message });
-      } else {
-        console.log('Email sent:', info);
-        return send200(res, { status: true, message: MESSAGE.OTP_SENT });
-      }
-    });
-  } catch (error) {
-    console.log('Error:', error);
-    return send400(res, { status: false, message: error.message });
-  }
-};
-
-
 // const sendOtp = async (req, res) => {
-//   const { phoneNumber } = req.body;
-
-//   const userId = req.user._id;
+//   const { email, userId, name } = req.body;
 //   try {
-//     if (!phoneNumber || !validateFields.validatePhoneNumber(phoneNumber)) {
-//       return send400(res, {
-//         status: false,
-//         message: MESSAGE.INVALID_NUMBER,
-//       });
-//     }
-
-//     const userData = await User.findOne({ phoneNumber });
-//     if (userData) {
-//       if (
-//         userData.phoneNumber === phoneNumber &&
-//         userData.isPhoneNumberVerified
-//       ) {
-//         return send400(res, {
-//           status: false,
-//           message: MESSAGE.PHONE_EXISTS,
-//         });
-//       }
-//     }
 //     const newOtp = generateOtp(4);
 //     await User.findOneAndUpdate(
 //       { _id: userId },
-//       {
-//         $set: {
-//           otp: newOtp,
-//           new: true,
-//           phoneNumber,
-//         },
-//       }
+//       { $set: { otp: newOtp, email } }
 //     );
-//     await Fast2SendOtp({
-//       message: `Your OTP for Stockology is ${newOtp}`,
+//     const { token: accessToken } = await oAuth2Client.getAccessToken();
 
-//       contactNumber: phoneNumber,
+//     const transporter = nodemailer.createTransport({
+//       service: 'gmail',
+//       auth: {
+//         type: 'OAuth2',
+//         user: 'eyalokmani@gmail.com',
+//         clientId: CLIENT_ID,
+//         clientSecret: CLIENT_SECRET,
+//         refreshToken: REFRESH_TOKEN,
+//         accessToken: accessToken,
+//       },
+//       tls: {
+//         rejectUnauthorized: false, // Disable certificate validation for testing (only for dev)
+//       },
 //     });
-//     return send200(res, {
-//       status: true,
-//       message: MESSAGE.OTP_SENT,
+
+//     const mailOptions = {
+//       from: 'eyalokmani@gmail.com',
+//       to: email,
+//       subject: 'Your OTP for Tradex Pro',
+//       html: `
+// <html>
+// <head>
+//     <meta charset="UTF-8">
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//     <title>OTP Verification</title>
+//     <style>
+//         body {
+//             font-family: Arial, sans-serif;
+//             background-color: #f4f4f4;
+//             margin: 0;
+//             padding: 20px;
+//         }
+//         .container {
+//             max-width: 600px;
+//             margin: auto;
+//             background: #ffffff;
+//             padding: 20px;
+//             border-radius: 5px;
+//             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+//         }
+//         h1 {
+//             font-size: 24px;
+//             color: #333;
+//         }
+//         p {
+//             font-size: 16px;
+//             color: #555;
+//         }
+//         .otp-code {
+//             font-size: 24px;
+//             font-weight: bold;
+//             color: #007BFF;
+//         }
+//         .footer {
+//             margin-top: 20px;
+//             font-size: 14px;
+//             color: #777;
+//         }
+//     </style>
+// </head>
+// <body>
+//     <div class="container">
+//         <h1>Hi ${name ? name : 'User'},</h1>
+//         <p>Your OTP code is:</p>
+//         <p class="otp-code">${newOtp}</p>
+//         <p>Please enter this code to verify your identity.</p>
+//         <div class="footer">
+//             <p>Thank you for using our service!</p>
+//         </div>
+//     </div>
+// </body>
+// </html>
+//       `,
+//     };
+
+//     // Send email
+//     transporter.sendMail(mailOptions, (error, info) => {
+//       if (error) {
+//         console.log('Error sending email:', error);
+//         return send400(res, { status: false, message: error.message });
+//       } else {
+//         console.log('Email sent:', info);
+//         return send200(res, { status: true, message: MESSAGE.OTP_SENT });
+//       }
 //     });
 //   } catch (error) {
-//     return send400(res, {
-//       status: false,
-//       message: error.message,
-//     });
+//     console.log('Error:', error);
+//     return send400(res, { status: false, message: error.message });
 //   }
 // };
+
+
+const sendOtp = async (req, res) => {
+  const { phoneNumber } = req.body;
+
+  const userId = req.user._id;
+  try {
+    if (!phoneNumber || !validateFields.validatePhoneNumber(phoneNumber)) {
+      return send400(res, {
+        status: false,
+        message: MESSAGE.INVALID_NUMBER,
+      });
+    }
+
+    const userData = await User.findOne({ phoneNumber });
+    if (userData) {
+      if (
+        userData.phoneNumber === phoneNumber &&
+        userData.isPhoneNumberVerified
+      ) {
+        return send400(res, {
+          status: false,
+          message: MESSAGE.PHONE_EXISTS,
+        });
+      }
+    }
+    const newOtp = generateOtp(4);
+    await User.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          otp: newOtp,
+          new: true,
+          phoneNumber,
+        },
+      }
+    );
+    await Fast2SendOtp({
+      message: `Your OTP for Stockology is ${newOtp}`,
+
+      contactNumber: phoneNumber,
+    });
+    return send200(res, {
+      status: true,
+      message: MESSAGE.OTP_SENT,
+    });
+  } catch (error) {
+    return send400(res, {
+      status: false,
+      message: error.message,
+    });
+  }
+};
 
 const verifyOtp = async (req, res) => {
   const { otp } = req.body;
