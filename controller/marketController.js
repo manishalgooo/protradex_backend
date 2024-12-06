@@ -1358,9 +1358,10 @@ const getMyStockHistory = async (req, res) => {
 };
 const decodeStockData = async (req, res) => {
   const stockData = req.body.stockData;
-
+   
   try {
     const currentModuleURL = import.meta.url;
+    console.log("currentModuleURL", currentModuleURL);
     const currentModulePath = fileURLToPath(currentModuleURL);
     const root = protobuf.loadSync(
       dirname(currentModulePath) + "/YPricingData.proto"
