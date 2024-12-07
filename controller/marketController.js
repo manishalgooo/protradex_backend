@@ -1358,28 +1358,41 @@ const getMyStockHistory = async (req, res) => {
 };
 const decodeStockData = async (req, res) => {
   const stockData = req.body.stockData;
-   
+
+  if (!stockData) {
+    return send400(res, {
+      status: false,
+      message: "stockData is missing or invalid",
+    });
+  }
+
   try {
     const currentModuleURL = import.meta.url;
     console.log("currentModuleURL", currentModuleURL);
+
     const currentModulePath = fileURLToPath(currentModuleURL);
     const root = protobuf.loadSync(
       dirname(currentModulePath) + "/YPricingData.proto"
     );
     const Yaticker = root.lookupType("yaticker");
+
     const data = Yaticker.decode(new Buffer(stockData, "base64"));
+    console.log("Decoded Data:", data);
+
     return send200(res, {
       status: true,
       message: MESSAGE.DECODED_DATA,
-      data,
+      data: data.toJSON(),
     });
   } catch (error) {
+    console.error("Error in decodeStockData:", error);
     return send500(res, {
       status: false,
       message: error.message,
     });
   }
 };
+
 
 const deleteStock = async (req, res) => {
   const userId = req.user._id;
