@@ -1282,7 +1282,7 @@ const squareOffCommodity = async (req, res) => {
 const getMyStocks = async (req, res) => {
   const userId = req.user._id;
   const type = req.params.type;
-
+  console.log(userId, type);
   try {
     const StocksData = await Stock.find({ userId });
     let data = [];
@@ -1342,7 +1342,7 @@ const getMyCommodities = async (req, res) => {
 
 const getMyStockHistory = async (req, res) => {
   const userId = req.user._id;
-
+  console.log(userId)
   try {
     const data = await Stock.find({ userId, squareOff: true });
     return send200(res, {
@@ -1516,14 +1516,14 @@ export const chain = async (req, res) => {
 };
 
 // Call the function
-// (async () => {
-//     try {
-//         const data = await fetchOptionChain();
-//         console.log('Option Chain Data:', data);
-//     } catch (error) {
-//         console.error('Failed to fetch data:', error.message);
-//     }
-// })();
+(async () => {
+    try {
+        const data = await fetchOptionChain();
+        console.log('Option Chain Data:', data);
+    } catch (error) {
+        console.error('Failed to fetch data:', error.message);
+    }
+})();
 const marketController = {
   addToWatchList,
   getWatchList,
