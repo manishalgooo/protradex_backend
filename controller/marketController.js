@@ -1515,15 +1515,15 @@ export const chain = async (req, res) => {
   }
 };
 
-// Call the function
-(async () => {
-    try {
-        const data = await fetchOptionChain();
-        console.log('Option Chain Data:', data);
-    } catch (error) {
-        console.error('Failed to fetch data:', error.message);
-    }
-})();
+// // Call the function
+// (async () => {
+//     try {
+//         const data = await fetchOptionChain();
+//         console.log('Option Chain Data:', data);
+//     } catch (error) {
+//         console.error('Failed to fetch data:', error.message);
+//     }
+// })();
 const marketController = {
   addToWatchList,
   getWatchList,
