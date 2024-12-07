@@ -9,8 +9,8 @@ const getStockPriceByOther = (symbol, optionType, identifier) => {
       const isIndexSelected = indexes.includes(symbol);
     //  http://192.168.1.14:5000/market/chain?index=NIFTY
     // https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY
-      const url = `https://www.nseindia.com/api/option-chain-indices?symbol=${symbol}`;
-      // const url = `https://option-chain-data.onrender.com/chain?${isIndexSelected?'index':'symbol'}=${symbol}`;
+      // const url = `https://www.nseindia.com/api/option-chain-indices?symbol=${symbol}`;
+      const url = `https://option-chain-data.onrender.com/chain?${isIndexSelected?'index':'symbol'}=${symbol}`;
       console.log("url --kya hia",url)
 
       // const response = await fetch(url);
