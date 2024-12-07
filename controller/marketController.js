@@ -102,6 +102,7 @@ const getWatchList = async (req, res) => {
   }
 };
 
+
 const removeWatchListItem = async (req, res) => {
   const userId = req.user._id;
   const symbol = req.params.symbol;
@@ -1356,6 +1357,7 @@ const getMyStockHistory = async (req, res) => {
     });
   }
 };
+
 const decodeStockData = async (req, res) => {
   const stockData = req.body.stockData;
 
