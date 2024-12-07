@@ -102,7 +102,6 @@ const getWatchList = async (req, res) => {
   }
 };
 
-
 const removeWatchListItem = async (req, res) => {
   const userId = req.user._id;
   const symbol = req.params.symbol;
@@ -1282,7 +1281,7 @@ const squareOffCommodity = async (req, res) => {
 const getMyStocks = async (req, res) => {
   const userId = req.user._id;
   const type = req.params.type;
-  console.log(userId, type);
+
   try {
     const StocksData = await Stock.find({ userId });
     let data = [];
@@ -1342,7 +1341,7 @@ const getMyCommodities = async (req, res) => {
 
 const getMyStockHistory = async (req, res) => {
   const userId = req.user._id;
-  console.log(userId)
+
   try {
     const data = await Stock.find({ userId, squareOff: true });
     return send200(res, {
@@ -1357,12 +1356,12 @@ const getMyStockHistory = async (req, res) => {
     });
   }
 };
-
 const decodeStockData = async (req, res) => {
   const stockData = req.body.stockData;
-
+   
   try {
     const currentModuleURL = import.meta.url;
+    console.log("currentModuleURL", currentModuleURL);
     const currentModulePath = fileURLToPath(currentModuleURL);
     const root = protobuf.loadSync(
       dirname(currentModulePath) + "/YPricingData.proto"
@@ -1515,7 +1514,7 @@ export const chain = async (req, res) => {
   }
 };
 
-// // Call the function
+// Call the function
 // (async () => {
 //     try {
 //         const data = await fetchOptionChain();
