@@ -1359,40 +1359,26 @@ const getMyStockHistory = async (req, res) => {
 const decodeStockData = async (req, res) => {
   const stockData = req.body.stockData;
 
-  if (!stockData) {
-    return send400(res, {
-      status: false,
-      message: "stockData is missing or invalid",
-    });
-  }
-
   try {
     const currentModuleURL = import.meta.url;
-    console.log("currentModuleURL", currentModuleURL);
-
     const currentModulePath = fileURLToPath(currentModuleURL);
     const root = protobuf.loadSync(
       dirname(currentModulePath) + "/YPricingData.proto"
     );
     const Yaticker = root.lookupType("yaticker");
-
     const data = Yaticker.decode(new Buffer(stockData, "base64"));
-    console.log("Decoded Data:", data);
-
     return send200(res, {
       status: true,
       message: MESSAGE.DECODED_DATA,
-      data: data.toJSON(),
+      data,
     });
   } catch (error) {
-    console.error("Error in decodeStockData:", error);
     return send500(res, {
       status: false,
       message: error.message,
     });
   }
 };
-
 
 const deleteStock = async (req, res) => {
   const userId = req.user._id;
@@ -1460,64 +1446,30 @@ const deleteStock = async (req, res) => {
 //   }
 // };
 
-const chain = async (req, res) => {
-  try {
-    const indexName = req.query.index;
-    const symbolName = req.query.symbol;
-
-    console.log(
-      "console ind",
-      indexName ?? symbolName,
-      indexName ? "index" : "symbol"
-    );
-
-    // Call the fetchNiftyOptionChain function and get the response
-    let resp;
-    if (indexName || symbolName) {
-      // Use the `index` or `symbol` parameter, based on the query.
-      resp = await fetchNiftyOptionChain();
-         console.log("indexOrSymbol :>> ", resp);
-    } else {
-      return res
-        .status(400)
-        .json({ error: "Missing index or symbol query parameter." });
-    }
-
-    console.log("indexOrSymbol :>> ", resp);
-    res.json(resp); // Send the response as JSON
-  } catch (err) {
-    console.error("Error fetching option chain:", err);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", message: err.message });
-  }
-};
-
-
-
-// export const chain = async (req, res) => {
+// const chain = async (req, res) => {
 //   try {
 //     const indexName = req.query.index;
 //     const symbolName = req.query.symbol;
 
 //     console.log(
-//       "console ind:",
+//       "console ind",
 //       indexName ?? symbolName,
 //       indexName ? "index" : "symbol"
 //     );
 
+//     // Call the fetchNiftyOptionChain function and get the response
 //     let resp;
 //     if (indexName || symbolName) {
-//       // Call fetchOptionChain using either indexName or symbolName as the symbol
-//       const symbol = indexName || symbolName;
-//       resp = await fetchOptionChain(symbol);
-//       console.log("indexOrSymbol response:", resp);
+//       // Use the `index` or `symbol` parameter, based on the query.
+//       resp = await fetchNiftyOptionChain();
+//          console.log("indexOrSymbol :>> ", resp);
 //     } else {
 //       return res
 //         .status(400)
 //         .json({ error: "Missing index or symbol query parameter." });
 //     }
 
+//     console.log("indexOrSymbol :>> ", resp);
 //     res.json(resp); // Send the response as JSON
 //   } catch (err) {
 //     console.error("Error fetching option chain:", err);
@@ -1526,6 +1478,40 @@ const chain = async (req, res) => {
 //       .json({ error: "Internal Server Error", message: err.message });
 //   }
 // };
+
+
+
+export const chain = async (req, res) => {
+  try {
+    const indexName = req.query.index;
+    const symbolName = req.query.symbol;
+
+    console.log(
+      "console ind:",
+      indexName ?? symbolName,
+      indexName ? "index" : "symbol"
+    );
+
+    let resp;
+    if (indexName || symbolName) {
+      // Call fetchOptionChain using either indexName or symbolName as the symbol
+      const symbol = indexName || symbolName;
+      resp = await fetchOptionChain(symbol);
+      console.log("indexOrSymbol response:", resp);
+    } else {
+      return res
+        .status(400)
+        .json({ error: "Missing index or symbol query parameter." });
+    }
+
+    res.json(resp); // Send the response as JSON
+  } catch (err) {
+    console.error("Error fetching option chain:", err);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+};
 
 // Call the function
 // (async () => {
